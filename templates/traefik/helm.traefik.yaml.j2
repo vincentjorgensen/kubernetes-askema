@@ -10,6 +10,7 @@ providers:
 ports:
   web:
     port: {{ ingress_http_port }}
+#    containerPort: 8000
     expose:
       default: true
     exposedPort: {{ ingress_http_port }}
@@ -17,6 +18,7 @@ ports:
 {%- if https_enabled %}
   websecure:
     port: {{ ingress_https_port }}
+#    containerPort: 8443
     expose:
       default: true
     exposedPort: {{ ingress_https_port }}
