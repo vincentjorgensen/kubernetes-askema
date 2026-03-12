@@ -26,7 +26,8 @@ function exec_helloworld {
 
 function exec_remote_helloworld {
   local _manifest="$MANIFESTS/remote-helloworld.backend.${GSI_CLUSTER}.yaml"
-  local _template="$TEMPLATES"/remote-hellowworld.backend.manifest.yaml.j2
+  local _template="$TEMPLATES"/gateway-api/remote-hellowworld.backend.manifest.yaml.j2
+
   local _j2="$MANIFESTS"/jinja2_globals."$GSI_CLUSTER".yaml
 
   _remote_helloworld_address=$(docker inspect helloworld | jq -r '.[].NetworkSettings.Networks."'"$DOCKER_NETWORK"'".IPAddress')
@@ -80,10 +81,11 @@ function exec_helloworld_routing {
         -p "$HELLOWORLD_SERVICE_PORT"
     fi
   fi
+
   if $REMOTE_HELLOWORLD_ENABLED; then
     if $GATEWAY_API_ENABLED; then
       local _manifest="$MANIFESTS/httproute.remote-helloworld.${GSI_CLUSTER}.yaml"
-      local _template="$TEMPLATES"/httproute.remote-helloworld.manifest.yaml.j2
+      local _template="$TEMPLATES"/gateway-api/httproute.remote-helloworld.manifest.yaml.j2
       
       _make_manifest "$_template" > "$_manifest"
       _apply_manifest "$_manifest"

@@ -72,6 +72,8 @@ export HELLOWORLD_SERVICE_PORT=8001
 export HELLOWORLD_CONTAINER_PORT=8080
 export HELLOWORLD_SIZE=1
 export REMOTE_HELLOWORLD_ENABLED=${REMOTE_HELLOWORLD_ENABLED:-false}
+export REMOTE_HELLOWORLD_SERVICE_PORT=8080
+export REMOTE_TLS_HELLOWORLD_SERVICE_PORT=8443
 export HW_SVC_VER=0
 
 #-------------------------------------------------------------------------------
@@ -314,7 +316,6 @@ export HELM_REPO_126_OSS=$HELM_REPO_PUB
 export ISTIO_FLAVOR_126_OSS=''
 export ISTIO_DISTRO_126_OSS=$ISTIO_DISTRO_GEN
 export REVISION_126_OSS=$REVISION_GEN
-
 # OSS Istio 1.27
 export ISTIO_VER_127_OSS=$ISTIO_VER_127
 export ISTIO_REPO_127_OSS=$ISTIO_REPO_PUB
@@ -322,7 +323,6 @@ export HELM_REPO_127_OSS=$HELM_REPO_PUB
 export ISTIO_FLAVOR_127_OSS=''
 export ISTIO_DISTRO_127_OSS=$ISTIO_DISTRO_GEN
 export REVISION_127_OSS=$REVISION_GEN
-
 # OSS Istio 1.28
 export ISTIO_VER_128_OSS=$ISTIO_VER_128
 export ISTIO_REPO_128_OSS=$ISTIO_REPO_PUB
@@ -330,7 +330,6 @@ export HELM_REPO_128_OSS=$HELM_REPO_PUB
 export ISTIO_FLAVOR_128_OSS=''
 export ISTIO_DISTRO_128_OSS=$ISTIO_DISTRO_GEN
 export REVISION_128_OSS=$REVISION_GEN
-
 # OSS Istio 1.29
 export ISTIO_VER_129_OSS=$ISTIO_VER_129
 export ISTIO_REPO_129_OSS=$ISTIO_REPO_PUB
@@ -346,7 +345,6 @@ export HELM_REPO_123_SOLO=oci://us-docker.pkg.dev/gloo-mesh/istio-helm-207627c16
 export ISTIO_FLAVOR_123_SOLO='-solo'
 export ISTIO_DISTRO_123_SOLO=$ISTIO_DISTRO_GEN
 export REVISION_123_SOLO=$REVISION_GEN
-
 # Solo Istio 1.24
 export ISTIO_VER_124_SOLO=$ISTIO_VER_124
 export ISTIO_REPO_124_SOLO=us-docker.pkg.dev/gloo-mesh/istio-4d37697f9711
@@ -354,7 +352,6 @@ export HELM_REPO_124_SOLO=oci://us-docker.pkg.dev/gloo-mesh/istio-helm-4d37697f9
 export ISTIO_FLAVOR_124_SOLO='-solo'
 export ISTIO_DISTRO_124_SOLO=$ISTIO_DISTRO_GEN
 export REVISION_124_SOLO=$REVISION_GEN
-
 # Solo Istio 1.25
 export ISTIO_VER_125_SOLO=$ISTIO_VER_125
 export ISTIO_REPO_125_SOLO=$ISTIO_REPO_GEN
@@ -362,7 +359,6 @@ export HELM_REPO_125_SOLO=$HELM_REPO_GEN
 export ISTIO_FLAVOR_125_SOLO='-solo'
 export ISTIO_DISTRO_125_SOLO=$ISTIO_DISTRO_GEN
 export REVISION_125_SOLO=$REVISION_GEN
-
 # Solo Istio 1.26
 export ISTIO_VER_126_SOLO=$ISTIO_VER_126
 export ISTIO_REPO_126_SOLO=$ISTIO_REPO_GEN
@@ -370,7 +366,6 @@ export HELM_REPO_126_SOLO=$HELM_REPO_GEN
 export ISTIO_FLAVOR_126_SOLO='-solo'
 export ISTIO_DISTRO_126_SOLO=$ISTIO_DISTRO_GEN
 export REVISION_126_SOLO=$REVISION_GEN
-
 # Solo Istio 1.27
 export ISTIO_VER_127_SOLO=$ISTIO_VER_127
 export ISTIO_REPO_127_SOLO=$ISTIO_REPO_GEN
@@ -378,7 +373,6 @@ export HELM_REPO_127_SOLO=$HELM_REPO_GEN
 export ISTIO_FLAVOR_127_SOLO='-solo'
 export ISTIO_DISTRO_127_SOLO=$ISTIO_DISTRO_GEN
 export REVISION_127_SOLO=$REVISION_GEN
-
 # Solo Istio 1.28
 export ISTIO_VER_128_SOLO=$ISTIO_VER_128
 export ISTIO_REPO_128_SOLO=$ISTIO_REPO_GEN
@@ -386,6 +380,13 @@ export HELM_REPO_128_SOLO=$HELM_REPO_GEN
 export ISTIO_FLAVOR_128_SOLO='-solo'
 export ISTIO_DISTRO_128_SOLO=$ISTIO_DISTRO_GEN
 export REVISION_128_SOLO=$REVISION_GEN
+# Solo Istio 1.29
+export ISTIO_VER_129_SOLO=$ISTIO_VER_129
+export ISTIO_REPO_129_SOLO=$ISTIO_REPO_GEN
+export HELM_REPO_129_SOLO=$HELM_REPO_GEN
+export ISTIO_FLAVOR_129_SOLO='-solo'
+export ISTIO_DISTRO_129_SOLO=$ISTIO_DISTRO_GEN
+export REVISION_129_SOLO=$REVISION_GEN
 ###
 # Traffic Distribution: PreferNetwork, PreferClose, PreferRegion, Any
 export ISTIO_VER ISTIO_REPO HELM_REPO ISTIO_FLAVOR ISTIO_DISTRO
@@ -1084,6 +1085,8 @@ function _jinja2_values {
          -D prometheus_enabled="$PROMETHEUS_FLAG"                              \
          -D ratelimiter_enabled="$RATELIMITER_FLAG"                            \
          -D region="$_region"                                                  \
+         -D remote_helloworld_service_port="$REMOTE_HELLOWORLD_SERVICE_PORT"   \
+         -D remote_tls_helloworld_service_port="$REMOTE_TLS_HELLOWORLD_SERVICE_PORT"   \
          -D sidecar_enabled="$SIDECAR_FLAG"                                    \
          -D sidecar_injector_webhooks_enabled="$SIDECAR_INJECTOR_WEBHOOKS_FLAG" \
          -D spire_enabled="$SPIRE_FLAG"                                        \

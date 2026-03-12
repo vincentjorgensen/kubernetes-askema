@@ -12,5 +12,6 @@ export AMBIENT_ENABLED=true
 export TRAEFIK_ENABLED=true
 
 # Test Apps
+export REMOTE_HELLOWORLD_ENABLED=true
 export HELLOWORLD_ENABLED=true
 export NETSHOOT_ENABLED=true

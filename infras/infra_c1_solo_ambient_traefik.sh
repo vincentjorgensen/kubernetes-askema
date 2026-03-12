@@ -4,10 +4,15 @@ export GSI_CLUSTER=cluster1
 export GSI_CONTEXT=$GSI_CLUSTER
 export GSI_NETWORK=$GSI_CLUSTER
 
+# Infrastructure
+export EXTERNAL_DNS_ENABLED=true
+export GSI_ISTIO=129_SOLO
+export AMBIENT_ENABLED=true
+
 # Gateway
 export TRAEFIK_ENABLED=true
 
 # Test Apps
-export HELLOWORLD_ENABLED=true
 export REMOTE_HELLOWORLD_ENABLED=true
+export HELLOWORLD_ENABLED=true
 export NETSHOOT_ENABLED=true

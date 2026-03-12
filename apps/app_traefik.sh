@@ -43,8 +43,8 @@ function exec_traefik_rbac {
   _rbac_url="$_rbac_url"/docs/content/reference
   _rbac_url="$_rbac_url"/dynamic-configuration/kubernetes-gateway-rbac.yml
   if is_create_mode; then
-    kubectl apply -f "$_rbac_url"
+    $DRY_RUN kubectl apply -f "$_rbac_url"
   else
-    kubectl delete -f "$_rbac_url"
+    $DRY_RUN kubectl delete -f "$_rbac_url"
   fi
 }

@@ -9,8 +9,10 @@ platforms:
   peering:
     enabled: true
 {%-   endif %}
+{%-   if multicluster_enabled %}
 license:
   value: {{ gloo_mesh_license_key }}
+{%-   endif %}
 {%- endif %}
 global:
   hub: {{ istio_repo }}
