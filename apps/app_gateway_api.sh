@@ -27,10 +27,20 @@ function app_init_eastwest_gateway_api {
     echo '# '"$0"
     $ITER_MC exec_eastwest_gateway_api
 
-    $ITER_MC exec_eastwest_link_gateway_api
+    if $SOLO_MULTICLUSTER_ENABLED; then
+      $ITER_MC exec_eastwest_link_gateway_api
+		fi
+
+    if $OSS_MULTICLUSTER_ENABLED; then
+      $ITER_MC exec_oss_eastwest_sync
+		fi
   fi
 }
 
+function exec_oss_eastwest_sync {
+  echo '# '"$0"
+	echo '# TODO OSS SYNC'
+}
 function exec_gateway_api_crds {
   local _gateway_api_ver
   if ! kubectl --context "$KSA_CONTEXT" get crds|grep -q gateways.gateway.networking.k8s.io; then

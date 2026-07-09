@@ -33,7 +33,7 @@ FILES_TO_CLEAN+=k8s-root-cert.pem \
 .PHONY: clean
 
 clean: ## Cleans all the intermediate files and folders previously generated.
-	@rm -f $(FILES_TO_CLEAN)
+	@echo rm -f $(FILES_TO_CLEAN)
 
 root-ca.conf:
 	@echo "[ req ]" > $@

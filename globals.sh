@@ -178,7 +178,7 @@ export HTTP_FLAG HTTPS_FLAG INGRESS_GATEWAY_CLASS PROMETHEUS_FLAG
 export GATEWAY_API_EXP_CRDS_ENABLED=${GATEWAY_API_EXP_CRDS_ENABLED:-false}
 export GATEWAY_API_ENABLED=${GATEWAY_API_ENABLED:-false}
 export GATEWAY_API_VER=v1.4.0
-export GATEWAY_API_EXP_VER=v1.4.0
+export GATEWAY_API_EXP_VER=v1.5.1
 export GATEWWAY_API_CRDS_URL=https://github.com/kubernetes-sigs/gateway-api/releases/download
 export GATEWAY_API_EXP_CRDS_FLAG
 
@@ -212,7 +212,7 @@ export EASTWEST_GATEWAY_CLASS EASTWEST_REMOTE_GATEWAY_CLASS
 #-------------------------------------------------------------------------------
 # Multicluster
 #-------------------------------------------------------------------------------
-export MC_FLAG ITER_MC ITER_MC_1
+export MC_FLAG ITER_MC ITER_MC_1 SOLO_MC_FLAG OSS_MC_FLAG
 
 #-------------------------------------------------------------------------------
 # Ingress as Istio Gateway (OSS)
@@ -234,11 +234,11 @@ export GLOO_EDGE_FLAG
 #-------------------------------------------------------------------------------
 export KGATEWAY_ENABLED=${KGATEWAY_ENABLED:-false}
 export KGATEWAY_NAMESPACE=kgateway-system
-export KGATEWAY_VER=v1.4.0
-export KGATEWAY_EXPERIMENTAL_VER=v1.4.0
+#####export KGATEWAY_VER=v1.4.0
+#####export KGATEWAY_EXPERIMENTAL_VER=v1.4.0
 export KGATEWAY_CRDS_HELM_REPO=oci://cr.kgateway.dev/kgateway-dev/charts/kgateway-crds
 export KGATEWAY_HELM_REPO=oci://cr.kgateway.dev/kgateway-dev/charts/kgateway
-export KGATEWAY_HELM_VER=v2.0.3
+export KGATEWAY_HELM_VER=2.4.0-main
 export KGATEWAY_FLAG
 
 #-------------------------------------------------------------------------------
@@ -300,13 +300,15 @@ export ISTIO_VER_126=1.26.8-patch1
 export ISTIO_VER_127=1.27.7
 export ISTIO_VER_128=1.28.4
 export ISTIO_VER_129=1.29.0
-export ISTIO_DEFAULT=129_OSS
+export ISTIO_VER_130=1.30.2
+export ISTIO_DEFAULT=130_OSS
 export ISTIO_SECRET=cacerts
-export DEFAULT_MESH_ID="mesh"
+export ISTIO_SECRETS_ENABLED=true
+export DEFAULT_MESH_ID="mesh1"
 export DEFAULT_TRUST_DOMAIN="cluster.local"
 export TRUST_DOMAIN=${TRUST_DOMAIN:-$DEFAULT_TRUST_DOMAIN}
 export MESH_ID=${MESH_ID:-$DEFAULT_MESH_ID}
-export ISTIO_PEER_AUTH_MODE="STRICT" # STRICT, PERMISSIVE, UNSET, DISABLED (not allowed for ztunnel)
+export ISTIO_PEER_AUTH_MODE="STRICT" # STRICT, PERMISSIVE, UNSET, [DISABLED (not allowed for ztunnel)]
 export SIDECAR_INJECTOR_WEBHOOKS_ENABLED=${SIDECAR_INJECTOR_WEBHOOKS_ENABLED:-false}
 
 # OSS Istio 1.26
@@ -337,6 +339,13 @@ export HELM_REPO_129_OSS=$HELM_REPO_PUB
 export ISTIO_FLAVOR_129_OSS=''
 export ISTIO_DISTRO_129_OSS=$ISTIO_DISTRO_GEN
 export REVISION_129_OSS=$REVISION_GEN
+# OSS Istio 1.30
+export ISTIO_VER_130_OSS=$ISTIO_VER_130
+export ISTIO_REPO_130_OSS=$ISTIO_REPO_PUB
+export HELM_REPO_130_OSS=$HELM_REPO_PUB
+export ISTIO_FLAVOR_130_OSS=''
+export ISTIO_DISTRO_130_OSS=$ISTIO_DISTRO_GEN
+export REVISION_130_OSS=$REVISION_GEN
 
 # Solo Istio 1.23
 export ISTIO_VER_123_SOLO=$ISTIO_VER_123
@@ -547,6 +556,7 @@ function ksa_init {
   #----------------------------------------------------------------------------
   if $SPIRE_ENABLED; then
     SPIRE_FLAG=enabled
+    ISTIO_SECRETS_ENABLED=false
     echo '#' SPIRE is enabled
   fi
   #----------------------------------------------------------------------------
@@ -649,14 +659,25 @@ function ksa_init {
     ITER_MC=_iter_mc
     ITER_MC_1=_iter_mc_1
     echo '#' Multicluster is enabled 
-    if $AMBIENT_ENABLED || $INTEROP_ENABLED; then
-      EASTWEST_GATEWAY_CLASS=istio-eastwest
-      EASTWEST_REMOTE_GATEWAY_CLASS=istio-remote
-      echo '#' Ambient Multicluster is enabled
-    fi
     if $FLAT_NETWORK_ENABLED; then
       FLAT_NETWORK_FLAG="enabled"
       echo '#' Ambient Multicluster Flat Network is enabled
+    fi
+    if [[ $ISTIO_FLAVOR =~ solo ]]; then
+      SOLO_MC_FLAG=true
+      echo '#' Solo.io Istio Multicluster enabled
+      if $AMBIENT_ENABLED || $INTEROP_ENABLED; then
+        EASTWEST_GATEWAY_CLASS=istio-eastwest
+        EASTWEST_REMOTE_GATEWAY_CLASS=istio-remote
+        echo '#' Ambient Solo Multicluster is enabled
+      fi
+    else
+      OSS_MC_FLAG=true
+      echo '#' OSS Istio Multicluster enabled
+      if $AMBIENT_ENABLED || $INTEROP_ENABLED; then
+        EASTWEST_GATEWAY_CLASS=istio-east-west
+        echo '#' Ambient OSS Multicluster is enabled
+      fi
     fi
   fi
 
@@ -1081,6 +1102,7 @@ function _jinja2_values {
          -D mesh_id="$MESH_ID"                                                 \
          -D multicluster_enabled="$MC_FLAG"                                    \
          -D netshoot_namespace="$NETSHOOT_NAMESPACE"                           \
+         -D oss_multicluster_enabled="$OSS_MC_FLAG"                            \
          -D peering_discover_suffix="$PEERING_DISCOVERY_SUFFIX"                \
          -D prometheus_enabled="$PROMETHEUS_FLAG"                              \
          -D ratelimiter_enabled="$RATELIMITER_FLAG"                            \
@@ -1089,6 +1111,7 @@ function _jinja2_values {
          -D remote_tls_helloworld_service_port="$REMOTE_TLS_HELLOWORLD_SERVICE_PORT"   \
          -D sidecar_enabled="$SIDECAR_FLAG"                                    \
          -D sidecar_injector_webhooks_enabled="$SIDECAR_INJECTOR_WEBHOOKS_FLAG" \
+         -D solo_multicluster_enabled="$SOLO_MC_FLAG"                          \
          -D spire_enabled="$SPIRE_FLAG"                                        \
          -D spire_namespace="$SPIRE_NAMESPACE"                                 \
          -D spire_secret="$SPIRE_SECRET"                                       \

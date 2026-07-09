@@ -11,7 +11,7 @@ metadata:
   labels:
     app: helloworld
     service: {{ helloworld_service_name }}
-{%- if ambient_enabled %}
+{%- if ambient_enabled and solo_multicluster_enabled %}
     solo.io/service-scope: global
 {%- endif %}
 spec:

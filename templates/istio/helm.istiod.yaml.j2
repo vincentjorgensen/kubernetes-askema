@@ -4,12 +4,12 @@ revision: {{ istio_revision }}
 {%- endif %}
 {%- if ambient_enabled or interop_enabled %}
 profile: ambient
-{%-   if multicluster_enabled %}
+{%-   if solo_multicluster_enabled %}
 platforms:
   peering:
     enabled: true
 {%-   endif %}
-{%-   if multicluster_enabled %}
+{%-   if solo_multicluster_enabled %}
 license:
   value: {{ gloo_mesh_license_key }}
 {%-   endif %}
@@ -49,9 +49,10 @@ env:
   PEERING_ENABLE_FLAT_NETWORKS: "true"
   DISABLE_LEGACY_MULTICLUSTER: "true"
 {%-   endif %}
-{%-   if istio_repo == "docker.io/istio" and multicluster_enabled %} 
+{%-   if oss_multicluster_enabled %} 
   # For OSS Multicluster Only
   AMBIENT_ENABLE_MULTI_NETWORK: "true"
+  AMBIENT_ENABLE_BAGGAGE: "true"
 {%-   endif %}
   PILOT_ENABLE_ALPHA_GATEWAY_API: true
   PILOT_ENABLE_IP_AUTOALLOCATE: true

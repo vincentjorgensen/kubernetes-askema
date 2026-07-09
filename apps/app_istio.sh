@@ -5,7 +5,7 @@ function app_init_istio {
     if $AWS_PCA_ENABLED && $CERT_MANAGER_ENABLED; then
       $ITER_MC app_init_acmpca
     else
-      if ! $SPIRE_ENABLED; then
+      if $ISTIO_SECRETS_ENABLED; then
         $ITER_MC exec_istio_secrets
       fi
       $ITER_MC exec_istio

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 function app_choose_infra {
+  # Kubernetes Gateway API
+  app_init_gateway_api
+
   # Cloud Infrastructure
   app_init_aws
 
@@ -16,9 +19,6 @@ function app_choose_infra {
 }
 
 function app_choose_gateway {
-  # Kubernetes Gateway API
-  app_init_gateway_api
-
   # Gateway Controllers
   app_init_traefik
   app_init_kgateway
